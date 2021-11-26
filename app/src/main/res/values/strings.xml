@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">MathsAlarm</string>
+    <string name="operand1">63</string>
+    <string name="operand2">743</string>
+    <string name="operator">+</string>
+    <string name="stop">STOP</string>
+    <string name="time">05:00 AM</string>
+    <string name="clock">Clock</string>
+    <string name="answer">Answer</string>
+    <string name="recurring">Recurring alarm</string>
+    <string name="days">Mo Tu We Th Fr</string>
+    <string name="sample_text">Sample Text</string>
+    <string name="alarm_title">Set Alarm Title</string>
+    <string name="recurring_alarm">Recurring Alarm</string>
+    <string name="schedule_alarm">Schedule Alarm</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="alarms">Alarms</string>
+    <string name="add_alarm">Add Alarm</string>
+    <string name="keep_trying">Keep trying</string>
+    <string name="right_answer">Hurrah You Made it</string>
+    <string name="title">Mine your inner crypto currency</string>
+</resources>

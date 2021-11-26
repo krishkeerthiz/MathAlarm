@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/listAlarmFragment">
+
+    <fragment
+        android:id="@+id/listAlarmFragment"
+        android:name="com.yourapp.mathsalarm.ui.listAlarm.ListAlarmFragment"
+        android:label="fragment_list_alarm"
+        tools:layout="@layout/fragment_list_alarm" >
+        <action
+            android:id="@+id/action_listAlarmFragment_to_createAlarmFragment"
+            app:destination="@id/createAlarmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createAlarmFragment"
+        android:name="com.yourapp.mathsalarm.ui.createAlarm.CreateAlarmFragment"
+        android:label="fragment_create_alarm"
+        tools:layout="@layout/fragment_create_alarm" >
+        <action
+            android:id="@+id/action_createAlarmFragment_to_listAlarmFragment"
+            app:destination="@id/listAlarmFragment"
+            app:popUpTo="@id/listAlarmFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>
