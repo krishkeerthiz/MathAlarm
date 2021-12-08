@@ -10,6 +10,7 @@ import android.os.IBinder
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
 import com.yourapp.mathsalarm.BuildConfig
+import com.yourapp.mathsalarm.R
 import com.yourapp.mathsalarm.activities.RingActivity
 import com.yourapp.mathsalarm.broadcastReceivers.AlarmBroadcastReceiver.Companion.ALARMID
 import com.yourapp.mathsalarm.broadcastReceivers.AlarmBroadcastReceiver.Companion.RECURRING
@@ -19,6 +20,11 @@ import com.yourapp.mathsalarm.database.AlarmRepository
 class AlarmService : Service() {
     private lateinit var vibrator: Vibrator
     private lateinit var ringtone: MediaPlayer
+    private lateinit var notificationManager: NotificationManager
+
+    private val PRIMARY_CHANNEL_ID: String = BuildConfig.APPLICATION_ID + "PRIMARY_CHANNEL_ID"
+    private val NOTIFICATION_ID = 0
+
 
     override fun onCreate() {
         vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -32,7 +38,6 @@ class AlarmService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val ringIntent = Intent(this, RingActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, ringIntent, 0)
 
         val id = intent?.getIntExtra(ALARMID, 1)!!
         val title = intent?.getStringExtra(TITLE)
@@ -43,13 +48,17 @@ class AlarmService : Service() {
 
         ringNVibrate()
 
-        val notification = setNotification(title, pendingIntent)
-        startForeground(2, notification)
+        createNotificationChannel()
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
             ringIntent.putExtra(TITLE, title)
             ringIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(ringIntent)
+        }
+        else{
+            val notification = getNotification(ringIntent)
+           // notificationManager.notify(NOTIFICATION_ID, notification)
+            startForeground(NOTIFICATION_ID, notification)
         }
 
         return START_STICKY
@@ -79,55 +88,31 @@ class AlarmService : Service() {
         ringtone.start()
     }
 
-    private fun setNotification(title: String?, pendingIntent: PendingIntent?): Notification {
-        val notification: Notification
+    private fun createNotificationChannel(){
+        notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                val channelId: String = BuildConfig.APPLICATION_ID + "_notification_id"
-                val channelName: String = BuildConfig.APPLICATION_ID + "_notification_name"
-                var mChannel = notificationManager.getNotificationChannel(channelId)
-                val builder = NotificationCompat.Builder(this, channelId)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val notificationChannel = NotificationChannel(
+                PRIMARY_CHANNEL_ID,
+                "Alarm Notification",
+                NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.description = "Notification from Math Alarm"
 
-                if (mChannel == null) {
-                    mChannel = NotificationChannel(
-                        channelId,
-                        channelName,
-                        NotificationManager.IMPORTANCE_HIGH)
-                    mChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-                    notificationManager.createNotificationChannel(mChannel)
-                }
-                builder
-                    .setContentTitle(title)
-                    .setContentText("Ring Ring .. Ring Ring")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_ALARM)
-                    .setFullScreenIntent(openScreen(), true)
-                    .setAutoCancel(true)
-                    .setOngoing(true)
-                notification = builder.build()
-
-                notificationManager.notify(0, notification)
-            }
-            else -> {
-                notification = NotificationCompat.Builder(this)
-                    .setContentTitle(title)
-                    .setContentText("Ring Ring .. Ring Ring")
-                    .setContentIntent(pendingIntent)
-                    .build()
-            }
+            notificationManager.createNotificationChannel(notificationChannel)
         }
-        return notification
     }
 
-    private fun openScreen(): PendingIntent? {
-        val fullScreenIntent = Intent(this, RingActivity::class.java)
-        return PendingIntent.getActivity(
-            this,
-            0,
-            fullScreenIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+    private fun getNotification(intent : Intent): Notification {
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
+            .setContentTitle("Notification from Math Alarm")
+            .setContentText("Hey Wake Up! Wake Up! Its time to start")
+            .setSmallIcon(R.drawable.ic_alarm)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setFullScreenIntent(pendingIntent, true)
+            .build()
     }
+
 
 }
