@@ -12,4 +12,12 @@ class CreateAlarmViewModel(application  :Application) : ViewModel() {
         alarmRepository.insert(alarm)
     }
 
+    fun update(alarm: Alarm){
+        alarmRepository.update(alarm)
+    }
+
+    fun delete(alarm: Alarm){
+        alarmRepository.delete(alarm)
+    }
+
 }

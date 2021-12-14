@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yourapp.mathsalarm.database.Alarm
 import com.yourapp.mathsalarm.databinding.AlarmCardViewBinding
 
-class AlarmRecyclerViewAdapter(private val listener: OnToggleAlarmListener) :
+class AlarmRecyclerViewAdapter(private val listener: OnToggleAlarmListener,
+private val itemClick : (alarm: Alarm) -> Unit) :
     RecyclerView.Adapter<AlarmViewHolder>() {
     private var alarms : List<Alarm> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
         val view = LayoutInflater.from(parent.context)
         val binding = AlarmCardViewBinding.inflate(view, parent, false)
-        return AlarmViewHolder(binding, listener)
+        return AlarmViewHolder(binding, listener, itemClick)
     }
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {

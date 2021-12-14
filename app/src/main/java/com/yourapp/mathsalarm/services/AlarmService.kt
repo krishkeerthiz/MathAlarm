@@ -3,11 +3,13 @@ package com.yourapp.mathsalarm.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Vibrator
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.yourapp.mathsalarm.BuildConfig
 import com.yourapp.mathsalarm.R
@@ -25,6 +27,7 @@ class AlarmService : Service() {
     private val PRIMARY_CHANNEL_ID: String = BuildConfig.APPLICATION_ID + "PRIMARY_CHANNEL_ID"
     private val NOTIFICATION_ID = 0
 
+    private val TAG :String = "AlarmService"
 
     override fun onCreate() {
         vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -38,7 +41,6 @@ class AlarmService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val ringIntent = Intent(this, RingActivity::class.java)
-
         val id = intent?.getIntExtra(ALARMID, 1)!!
         val title = intent?.getStringExtra(TITLE)
         val recurring = intent?.getBooleanExtra(RECURRING, true)
@@ -50,16 +52,23 @@ class AlarmService : Service() {
 
         createNotificationChannel()
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
-            ringIntent.putExtra(TITLE, title)
-            ringIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(ringIntent)
-        }
-        else{
-            val notification = getNotification(ringIntent)
-           // notificationManager.notify(NOTIFICATION_ID, notification)
-            startForeground(NOTIFICATION_ID, notification)
-        }
+//        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+//            ringIntent.putExtra(TITLE, title)
+//            ringIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            startActivity(ringIntent)
+//            Log.d(TAG, "Below Api26 Direct activity call")
+//        }
+//        else{
+//            val notification = getNotification(ringIntent)
+//            notificationManager.notify(NOTIFICATION_ID, notification)
+//            //this.startForeground(NOTIFICATION_ID, notification)
+//            Log.d(TAG, " Api26 ++ Start foreground ")
+//        }
+
+        ringIntent.putExtra(TITLE, title)
+        ringIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val notification = getNotification(ringIntent, title)
+        notificationManager.notify(NOTIFICATION_ID, notification)
 
         return START_STICKY
     }
@@ -68,6 +77,8 @@ class AlarmService : Service() {
         super.onDestroy()
         ringtone.stop()
         vibrator.cancel()
+        notificationManager.cancel(NOTIFICATION_ID)
+
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -102,11 +113,15 @@ class AlarmService : Service() {
         }
     }
 
-    private fun getNotification(intent : Intent): Notification {
+    private fun getNotification(intent : Intent, title : String?): Notification {
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        var message = "Make it happen :)"
+        if(title != "")
+            message = title!!
         return NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
-            .setContentTitle("Notification from Math Alarm")
-            .setContentText("Hey Wake Up! Wake Up! Its time to start")
+            .setContentTitle("Hey, It's Time")
+            .setContentText(message)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.alarm_notification))
             .setSmallIcon(R.drawable.ic_alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)

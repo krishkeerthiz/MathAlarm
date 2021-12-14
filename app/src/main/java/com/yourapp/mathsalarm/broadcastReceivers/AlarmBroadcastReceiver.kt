@@ -1,14 +1,17 @@
 package com.yourapp.mathsalarm.broadcastReceivers
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.yourapp.mathsalarm.services.AlarmService
 import com.yourapp.mathsalarm.services.RescheduleService
 import java.util.*
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {
+    private val TAG : String = "AlarmBroadcastReceiver"
     override fun onReceive(context: Context, intent: Intent) {
 
         //Restart services on reboot
@@ -72,10 +75,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun startServiceIntent(context : Context, intent : Intent){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            context.startForegroundService(intent)
-        else
-            context.startService(intent)
+        context.startService(intent)
+        Log.d(TAG, "Service started")
     }
 
     companion object{
