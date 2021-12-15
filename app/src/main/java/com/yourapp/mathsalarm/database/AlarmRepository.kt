@@ -35,4 +35,12 @@ class AlarmRepository(val application: Application) {
     }
 
     fun getAlarmsLiveData() = alarmsLiveData
+
+    fun getAlarm(alarmId : Int) = alarmDao.getAlarm(alarmId)
+
+    fun delete(alarm: Alarm){
+        AlarmDatabase.databaseWriteExecutor.execute{
+            alarmDao.delete(alarm)
+        }
+    }
 }

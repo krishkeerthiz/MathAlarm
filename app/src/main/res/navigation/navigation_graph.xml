@@ -24,5 +24,9 @@
             app:destination="@id/listAlarmFragment"
             app:popUpTo="@id/listAlarmFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="alarm"
+            app:argType="com.yourapp.mathsalarm.database.Alarm"
+            app:nullable="true"/>
     </fragment>
 </navigation>

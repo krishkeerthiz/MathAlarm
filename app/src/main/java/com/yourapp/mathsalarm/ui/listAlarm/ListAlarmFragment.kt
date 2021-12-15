@@ -40,7 +40,9 @@ class ListAlarmFragment : Fragment(), OnToggleAlarmListener {
 
         viewModel = ViewModelProviders.of(this, ListAlarmViewModelFactory(requireActivity().application))
             .get(ListAlarmViewModel::class.java)
-        val alarmRecyclerViewAdapter = AlarmRecyclerViewAdapter(this)
+        val alarmRecyclerViewAdapter = AlarmRecyclerViewAdapter(this){
+            navigate(view, it)
+        }
 
         viewModel.getAlarmsLiveData().observe(viewLifecycleOwner, { alarms ->
             alarmRecyclerViewAdapter.setAlarms(alarms)
@@ -51,8 +53,13 @@ class ListAlarmFragment : Fragment(), OnToggleAlarmListener {
         recyclerView.adapter = alarmRecyclerViewAdapter
 
         binding.addAlarm.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_listAlarmFragment_to_createAlarmFragment)
-        }
+            navigate(view, null)
+            }
+    }
+
+    private fun navigate(view : View, alarm : Alarm?){
+        val action = ListAlarmFragmentDirections.actionListAlarmFragmentToCreateAlarmFragment(alarm)
+        Navigation.findNavController(view).navigate(action)
     }
 
     override fun onToggle(alarm: Alarm) {

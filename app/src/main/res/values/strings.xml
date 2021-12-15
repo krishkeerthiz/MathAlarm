@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MathsAlarm</string>
+    <string name="app_name">MathAlarm</string>
     <string name="operand1">63</string>
     <string name="operand2">743</string>
     <string name="operator">+</string>

@@ -15,4 +15,6 @@ class ListAlarmViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun getAlarmsLiveData() = alarmsLiveData
+
+    fun getAlarm(alarmId : Int) = alarmRepository.getAlarm(alarmId)
 }
