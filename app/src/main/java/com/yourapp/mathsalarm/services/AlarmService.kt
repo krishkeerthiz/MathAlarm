@@ -9,7 +9,6 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Vibrator
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.yourapp.mathsalarm.BuildConfig
 import com.yourapp.mathsalarm.R
@@ -51,19 +50,6 @@ class AlarmService : Service() {
         ringNVibrate()
 
         createNotificationChannel()
-
-//        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
-//            ringIntent.putExtra(TITLE, title)
-//            ringIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            startActivity(ringIntent)
-//            Log.d(TAG, "Below Api26 Direct activity call")
-//        }
-//        else{
-//            val notification = getNotification(ringIntent)
-//            notificationManager.notify(NOTIFICATION_ID, notification)
-//            //this.startForeground(NOTIFICATION_ID, notification)
-//            Log.d(TAG, " Api26 ++ Start foreground ")
-//        }
 
         ringIntent.putExtra(TITLE, title)
         ringIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

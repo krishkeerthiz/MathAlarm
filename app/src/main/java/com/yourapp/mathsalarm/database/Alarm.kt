@@ -77,19 +77,15 @@ class Alarm(
 
         // Set alarm once
         if(!recurring){
-//            val toastMessage = "Alarm set at ${formatHour(hour)} : $minute ${getMeridian()}"
-//            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
-            alarmManager.setExact(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + timeDifference,
+            alarmManager.setAlarmClock(AlarmManager.
+            AlarmClockInfo(System.currentTimeMillis() + timeDifference,
+                pendingIntent),
                 pendingIntent
             )
+
         }
         // Set repeating alarm
         else{
-//            val toastMessage = "Repeated Alarm set at ${formatHour(hour)} : $minute ${getMeridian()} on ${getRecurringDays()}"
-//            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
-            val runDaily = 24.toLong()*60*60*1000
             alarmManager.setRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + timeDifference,
